@@ -1,6 +1,5 @@
 package com.xannanov.startup.base
 
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.splineBasedDecay
@@ -8,7 +7,6 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -24,7 +22,9 @@ import kotlin.math.roundToInt
 
 // region Card Swipe
 abstract class CardSwipeBase(
-    val uuid: String = UUID.randomUUID().toString()
+    val uuid: String = UUID.randomUUID().toString(),
+    // TODO: ВРЕМЕННОЕ РЕШЕНИЕ. Попробовать выделить в State для модифайра
+    var offset: Float = 0f,
 )
 
 fun Modifier.cardSwipe(
@@ -104,16 +104,15 @@ fun Modifier.cardOffset(
     item: CardSwipeBase,
     index: Int,
 ): Modifier = composed {
-    val offset = remember { Animatable(0f) }
-    val prevLast = remember { mutableStateOf(items.last()) }
+    val offset = remember(items) { Animatable(item.offset) }
 
     LaunchedEffect(items) {
-        if (items.last() == item && items.last() != prevLast.value) {
-            offset.snapTo(CARD_BASE_OFFSET)
+        if (items.lastIndex == index) {
             offset.animateTo(0f)
-            prevLast.value = item
+            item.offset = 0f
         } else {
             offset.animateTo((items.lastIndex - index) * CARD_BASE_OFFSET)
+            item.offset = (items.lastIndex - index) * CARD_BASE_OFFSET
         }
     }
     offset { IntOffset(-offset.value.roundToInt(), offset.value.roundToInt()) }

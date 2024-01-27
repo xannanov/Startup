@@ -38,6 +38,11 @@ fun CardBlock(
         cardItems.forEachIndexed { index, item ->
             Box(
                 modifier = Modifier
+                    .cardOffset(
+                        items = cardItems,
+                        item = item,
+                        index = index,
+                    )
                     .cardSwipe(
                         item = item,
                         onDismiss = {
@@ -48,11 +53,6 @@ fun CardBlock(
                             onApply.invoke()
                             Toast.makeText(context, "apply", Toast.LENGTH_SHORT).show()
                         },
-                    )
-                    .cardOffset(
-                        items = cardItems,
-                        item = item,
-                        index = index,
                     )
                     .padding(12.dp)
                     .fillMaxSize()
