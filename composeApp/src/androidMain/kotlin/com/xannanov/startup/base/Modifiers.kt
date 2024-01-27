@@ -24,7 +24,7 @@ import kotlin.math.roundToInt
 abstract class CardSwipeBase(
     val uuid: String = UUID.randomUUID().toString(),
     // TODO: ВРЕМЕННОЕ РЕШЕНИЕ. Попробовать выделить в State для модифайра
-    var offset: Float = 0f,
+    var offset: Float = CARD_BASE_OFFSET * 5f,
 )
 
 fun Modifier.cardSwipe(
