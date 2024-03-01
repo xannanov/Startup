@@ -1,4 +1,4 @@
-package com.xannanov.startup.base.widgets
+package com.xannanov.startup.base.ui.widgets
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

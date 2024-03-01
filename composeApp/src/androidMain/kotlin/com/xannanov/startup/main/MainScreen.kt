@@ -9,7 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.xannanov.startup.R
-import com.xannanov.startup.base.widgets.NavBar
+import com.xannanov.startup.base.ui.widgets.NavBar
 import com.xannanov.startup.main.widgets.CardBlock
 import kotlinx.coroutines.flow.update
 
