@@ -40,6 +40,7 @@ fun Modifier.cardSwipe(
             while (true) {
                 val velocityTracker = VelocityTracker()
                 offsetX.stop()
+
                 awaitPointerEventScope {
                     val pointerId = awaitFirstDown().id
 
@@ -55,6 +56,8 @@ fun Modifier.cardSwipe(
                             timeMillis = change.uptimeMillis,
                             position = change.position
                         )
+
+                        change.consume()
                     }
                 }
 

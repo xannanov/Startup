@@ -21,11 +21,11 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(compose.material3)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
@@ -66,5 +66,11 @@ android {
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
     }
-}
+    buildFeatures {
+        compose = true
+    }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
+    }
+}

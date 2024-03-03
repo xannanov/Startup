@@ -1,11 +1,13 @@
 package com.xannanov.startup
 
-import App
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.xannanov.startup.base.ui.StartupTheme
+import com.xannanov.startup.base.ui.widgets.CustomDrawer
+import com.xannanov.startup.base.ui.widgets.DefaultDrawerMenu
 import com.xannanov.startup.main.MainScreen
 
 class MainActivity : ComponentActivity() {
@@ -13,13 +15,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MainScreen()
+            StartupTheme {
+                CustomDrawer(
+                    menuContent = { DefaultDrawerMenu() },
+                    content = { MainScreen() },
+                )
+            }
         }
     }
-}
-
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App()
 }

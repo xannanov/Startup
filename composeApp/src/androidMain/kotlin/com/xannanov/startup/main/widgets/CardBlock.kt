@@ -10,7 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,27 +48,47 @@ fun CardBlock(
                         item = item,
                         onDismiss = {
                             onDismiss.invoke()
-                            Toast.makeText(context, "dismiss", Toast.LENGTH_SHORT).show()
+                            Toast
+                                .makeText(context, "dismiss", Toast.LENGTH_SHORT)
+                                .show()
                         },
                         onApply = {
                             onApply.invoke()
-                            Toast.makeText(context, "apply", Toast.LENGTH_SHORT).show()
+                            Toast
+                                .makeText(context, "apply", Toast.LENGTH_SHORT)
+                                .show()
                         },
                     )
                     .padding(12.dp)
                     .fillMaxSize()
                     .clip(RoundedCornerShape(12.dp))
-                    .background(if (index == cardItems.lastIndex) Color.Magenta else Color.Green)
-                    .border(
-                        border = BorderStroke(2.dp, Color.Black),
-                        shape = RoundedCornerShape(12.dp)
+                    .background(
+                        if (index == cardItems.lastIndex) {
+                            MaterialTheme.colorScheme.tertiary
+                        } else {
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        }
+                    )
+                    .then(
+                        if (index == cardItems.lastIndex) {
+                            Modifier
+                        } else {
+                            Modifier.border(
+                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.onTertiary),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                        }
                     ),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = item.title,
-                    color = Color.Black,
-                    fontSize = 30.sp,
+                    color = if (index == cardItems.lastIndex) {
+                        MaterialTheme.colorScheme.onTertiary
+                    } else {
+                        MaterialTheme.colorScheme.onTertiaryContainer
+                    },
+                    style = MaterialTheme.typography.titleLarge,
                 )
             }
         }
