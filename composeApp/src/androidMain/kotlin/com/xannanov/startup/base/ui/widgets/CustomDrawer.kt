@@ -3,7 +3,7 @@ package com.xannanov.startup.base.ui.widgets
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -16,10 +16,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -29,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CustomDrawer(
     menuContent: @Composable () -> Unit,
@@ -37,6 +39,8 @@ fun CustomDrawer(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val translationX = remember { Animatable(0f) }
+    val tonalElevation = remember { Animatable(0f) }
+    val isDrawerExpanded = remember { mutableStateOf(false) }
     val draggableState = rememberDraggableState { dragAmount ->
         coroutineScope.launch {
             translationX.snapTo(translationX.value + dragAmount)
@@ -45,13 +49,25 @@ fun CustomDrawer(
     val decay = rememberSplineBasedDecay<Float>()
     val drawerWidth = remember { mutableFloatStateOf(0f) }
 
+    LaunchedEffect(isDrawerExpanded.value) {
+        if (isDrawerExpanded.value) {
+            tonalElevation.animateTo(12f)
+        } else {
+            tonalElevation.animateTo(0f)
+        }
+    }
+
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize(),
     ) {
         drawerWidth.floatValue = with(LocalDensity.current) { maxWidth.toPx() }
         translationX.updateBounds(0f, drawerWidth.floatValue * .8f)
 
-        menuContent()
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+        ) {
+            menuContent()
+        }
 
         Surface(
             modifier = Modifier
@@ -70,8 +86,10 @@ fun CustomDrawer(
 
                         coroutineScope.launch {
                             val targetX = if (decayX > drawerWidth.floatValue * .5f) {
+                                isDrawerExpanded.value = true
                                 drawerWidth.floatValue
                             } else {
+                                isDrawerExpanded.value = false
                                 0f
                             }
 
@@ -100,13 +118,16 @@ fun CustomDrawer(
                             indication = null,
                         ) {
                             coroutineScope.launch {
+                                isDrawerExpanded.value = false
                                 translationX.animateTo(0f)
                             }
                         }
                     } else Modifier
                 )
+                .background(MaterialTheme.colorScheme.surface)
                 .fillMaxSize(),
-            elevation = 12.dp,
+            tonalElevation = tonalElevation.value.dp,
+            shadowElevation = 12.dp,
         ) {
             content()
         }
@@ -116,7 +137,9 @@ fun CustomDrawer(
 @Composable
 fun DefaultDrawerMenu() {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surface)
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
     ) {
         DefaultDrawerMenuItem("Профиль") {}
@@ -137,6 +160,10 @@ fun DefaultDrawerMenuItem(
             .padding(vertical = 12.dp),
         horizontalArrangement = Arrangement.Center,
     ) {
-        Text(itemText)
+        Text(
+            text = itemText,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.bodyMedium,
+        )
     }
 }
